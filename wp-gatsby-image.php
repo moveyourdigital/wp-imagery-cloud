@@ -85,7 +85,6 @@ add_action( 'graphql_register_types', function () {
 
 } );
 
-
 /** This filter is documented in wp-admin/includes/image.php */
 add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array $metadata, int $attachment_id = null ) {
 
@@ -115,25 +114,17 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 			$size_data['crop'] = false;
 		}
 
-		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			\WP_Gatsby_Image\image_processor(
-				$attachment_id, $size, $file_path, $size_data['width'], $size_data['height'], $size_data['crop']
-			);
+		$_wp_gatsby_image_queue->push_to_queue( [
+			'attachment_id' => $attachment_id,
+			'file'          => $file_path,
+			'size'		    => $size,
+			'width'         => $size_data['width'],
+			'height'        => $size_data['height'],
+			'crop'          => $size_data['crop'],
+		] );
 
-		} else {
-			$_wp_gatsby_image_queue->push_to_queue( [
-				'attachment_id' => $attachment_id,
-				'file'          => $file_path,
-				'size'		    => $size,
-				'width'         => $size_data['width'],
-				'height'        => $size_data['height'],
-				'crop'          => $size_data['crop'],
-			] );
-		}
-	}
-
-	if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 		$_wp_gatsby_image_queue->save()->dispatch();
+
 	}
 
 	return [];

@@ -36,12 +36,15 @@ function image_processor(
 
 	wp_update_attachment_metadata( $attachment_id, $metadata );
 
+	$fileinfo = pathinfo( $file );
+
 	/**
 	 * After the image is saved, this filter runs off.
 	 */
 	do_action(
 		'WP_Gatsby_Image\\after_image_size_process',
-		$metadata, $attachment_id, $file, $size, $width, $height, $crop,
+		$metadata, $attachment_id, trailingslashit( $fileinfo['dirname'] ) . $result['file'],
+		$size, $result['width'], $result['height'], $crop,
 	);
 
 	return true;
