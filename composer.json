@@ -1,8 +1,28 @@
 {
+  "name": "moveyourdigital/wp-gatsby-image",
+  "description": "WordPress Plugin that optimizes images, generates WebP and base64 and exposes a Gatsby Image API-like on WPGraphQL schema and WP-Rest API",
+  "homepage": "https://github.com/moveyourdigital/wp-gatsby-image",
+  "keywords": [
+    "wordpress"
+  ],
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Move Your Digital, Inc.",
+      "email": "engineering@moveyourdigital.com",
+      "homepage": "https://moveyourdigital.com/"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/moveyourdigital/wp-gatsby-image/issues",
+    "source": "https://github.com/moveyourdigital/wp-gatsby-image"
+  },
+  "type": "wordpress-plugin",
     "require": {
-        "spatie/image-optimizer": "^1.2",
-        "psr/log": "^1.1",
-        "rosell-dk/webp-convert": "^2.3",
-        "deliciousbrains/wp-background-processing": "^1.0"
+      "composer/installers": "~1.0",
+      "spatie/image-optimizer": "^1.2",
+      "psr/log": "^1.1",
+      "rosell-dk/webp-convert": "^2.3",
+      "deliciousbrains/wp-background-processing": "^1.0"
     }
 }
