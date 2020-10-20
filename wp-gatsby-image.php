@@ -23,6 +23,8 @@
  * License:			MIT
  */
 
+use Imagecow\Image;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -114,17 +116,27 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 			$size_data['crop'] = false;
 		}
 
-		$_wp_gatsby_image_queue->push_to_queue( [
-			'attachment_id' => $attachment_id,
-			'file'          => $file_path,
-			'size'		    => $size,
-			'width'         => $size_data['width'],
-			'height'        => $size_data['height'],
-			'crop'          => $size_data['crop'],
-		] );
+		if ( defined('WP_CLI') && WP_CLI ) {
 
-		$_wp_gatsby_image_queue->save()->dispatch();
+			\WP_Gatsby_Image\image_processor(
+				$attachment_id, $size, $file_path,
+				$size_data['width'], $size_data['height'], $size_data['crop']
+			);
 
+		} else {
+
+			$_wp_gatsby_image_queue->push_to_queue( [
+				'attachment_id' => $attachment_id,
+				'file'          => $file_path,
+				'size'		    => $size,
+				'width'         => $size_data['width'],
+				'height'        => $size_data['height'],
+				'crop'          => $size_data['crop'],
+			] );
+
+			$_wp_gatsby_image_queue->save()->dispatch();
+
+		}
 	}
 
 	return [];
@@ -134,7 +146,8 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 
 /** This action is documented in includes/class-background-image-process.php */
 add_action( 'WP_Gatsby_Image\\after_image_size_process', function (
-	array $metadata, int $attachment_id, string $filename, string $size, int $width, int $height, bool $crop
+	array $metadata, int $attachment_id, string $filename,
+	string $size, int $width, int $height, bool $crop
 ) {
 
 	if ( ! function_exists( '\\WP_Gatsby_Image\\optimize_image' ) ) {
@@ -201,7 +214,7 @@ add_action( 'WP_Gatsby_Image\\after_image_size_process', function (
 
 	update_post_meta( $attachment_id, '_wp_gatsby_image_metadata', $extended_metadata );
 
-}, 10, 7 );
+}, 10, 8 );
 
 
 /** This action is documented in wp-includes/rest-api.php */

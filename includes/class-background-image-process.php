@@ -44,7 +44,7 @@ class Background_Image_Process extends \WP_Background_Process {
 		 * If we've already tried this image 5 times, remove it.
 		 * If not, bump the attempts and add it back onto the queue
 		 */
-		if ( $item['attempts'] == 5 ) {
+		if ( $item['attempts'] == 2 ) {
 			return false;
 		}
 
