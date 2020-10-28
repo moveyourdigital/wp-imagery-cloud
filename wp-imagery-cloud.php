@@ -107,7 +107,8 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 				'useBlurHa' => WP_IMAGERY_CLOUD_BLURHA_ENABLED,
 			];
 		}, $srcsets),
-		rest_url( "imagery-cloud/v1/media/$attachment_id" ),
+		//apply_filters( '\WP_Imagery_Cloud\callback_url', rest_url( "imagery-cloud/v1/media/$attachment_id" ) ),
+		get_site_url( null, trailingslashit( rest_get_url_prefix() ) . "imagery-cloud/v1/media/$attachment_id" , 'https' ),
 		'jpeg',
 		WP_IMAGERY_CLOUD_WEBP_ENABLED,
 
