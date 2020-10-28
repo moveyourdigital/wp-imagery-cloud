@@ -84,13 +84,22 @@ add_action( 'graphql_register_types', function () {
 /** This filter is documented in wp-admin/includes/image.php */
 add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array $metadata, int $attachment_id = null ) {
 
+	if ( ! count( $sizes ) ) {
+		return [];
+	}
+
+	/** Fixes issue of https://github.com/wp-cli/media-command/blob/98102a52d0102fbda6644f100cebbd96f0e9199a/src/Media_Command.php#L828 */
+	if ( null === $attachment_id ) {
+		return [];
+	}
+
 	require_once dirname( __FILE__ ) . '/includes/class-imagery-cloud-client.php';
 
 	$upload_dir = wp_get_upload_dir();
 	$file_url = trailingslashit( $upload_dir['baseurl'] ) . $metadata['file'];
 
 	if ( null === $attachment_id ) {
-		$attachment_id = attachment_url_to_postid( $file_url );
+		//$attachment_id = attachment_url_to_postid( $file_url );
 	}
 
 	$srcsets = \WP_Imagery_Cloud\get_registered_image_srcsets();
