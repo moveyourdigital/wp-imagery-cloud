@@ -15,9 +15,9 @@ if (!empty($allowed_post_types) && is_array($allowed_post_types)) {
 			register_graphql_fields(
 				$post_type_object->graphql_single_name,
 				[
-					'gatsbyImage'   => [
-						'type'        => [ 'list_of' => 'MediaItemGatsbyImage' ],
-						'description' => __('Gatsby Image array of objects', 'wp-graphql'),
+					'srcSets'   => [
+						'type'        => [ 'list_of' => 'MediaItemVersion' ],
+						'description' => __('Versions array of objects', 'wp-graphql'),
 						'args'        => [
 							'sizes' => [
 								'type'        => [ 'list_of' => 'String' ],
@@ -29,12 +29,18 @@ if (!empty($allowed_post_types) && is_array($allowed_post_types)) {
 
 							if ( $metadata && isset( $metadata['srcsets'] ) ) {
 								if ( isset( $args['sizes'] ) ) {
-									return array_filter( $metadata['srcsets'], function ( $item ) use ( $args ) {
+									$metadata['srcsets'] = array_filter( $metadata['srcsets'], function ( $item ) use ( $args ) {
 										return in_array( $item['name'], $args['sizes'] );
 									} );
-								} else {
-									return $metadata['srcsets'];
 								}
+
+								$result = [];
+
+								foreach ( $metadata['srcsets'] as $name => $details ) {
+									$result[] = array_merge( [ 'name' => $name ], $details );
+								}
+
+								return $result;
 							}
 						},
 					],

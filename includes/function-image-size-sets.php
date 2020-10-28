@@ -1,6 +1,6 @@
 <?php
 
-namespace WP_Gatsby_Image;
+namespace WP_Imagery_Cloud;
 
 global $_wp_gatsby_image_srcsets;
 $_wp_gatsby_image_srcsets = [];

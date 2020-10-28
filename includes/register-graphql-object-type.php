@@ -1,11 +1,25 @@
 <?php
 
-register_graphql_object_type( 'MediaItemGatsbyImage', [
-	'description' => __( "All Gatsby Image support for MediaItem ", 'wp-gatsby-image' ),
+register_graphql_object_type( 'MediaItemVersionSources', [
+	'description' => __( "Media Item SrcSet Sources property support ", 'wp-gatsby-image' ),
+	'fields' => [
+		'mimeType' => [
+			'type' => 'String',
+			'description' => __('Image mimetype', 'wp-gatsby-image'),
+		],
+		'srcSet' => [
+			'type' => 'String',
+			'description' => __('Image srcset', 'wp-gatsby-image'),
+		],
+	],
+]);
+
+register_graphql_object_type( 'MediaItemVersion', [
+	'description' => __( "Srcset support for MediaItem ", 'wp-gatsby-image' ),
 	'fields' => [
 		'name' => [
 			'type' => 'String',
-			'description' => __('The name of the size', 'wp-gatsby-image'),
+			'description' => __('The name of the srcset', 'wp-gatsby-image'),
 		],
 		'aspectRatio' => [
 			'type' => 'Float',
@@ -23,17 +37,13 @@ register_graphql_object_type( 'MediaItemGatsbyImage', [
 			'type' => 'String',
 			'description' => __('The fallback original image URI', 'wp-gatsby-image'),
 		],
-		'srcSet' => [
-			'type' => 'String',
+		'sources' => [
+			'type' => [ 'list_of' => 'MediaItemVersionSources' ],
 			'description' => __('Original image format srcset', 'wp-gatsby-image'),
 		],
-		'srcWebp' => [
+		'base64' => [
 			'type' => 'String',
-			'description' => __('WebP version of image URI', 'wp-gatsby-image'),
-		],
-		'srcSetWebp' => [
-			'type' => 'String',
-			'description' => __('Srcset of WebP versions', 'wp-gatsby-image'),
+			'description' => __('Base64 image representation', 'wp-gatsby-image'),
 		],
 	],
 ]);
