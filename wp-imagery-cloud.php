@@ -30,6 +30,10 @@ if ( ! defined( 'WPINC' ) ) {
 /** This filter is documented in wp-settings.php */
 add_action( 'plugins_loaded', function () {
 
+	if ( ! defined( 'WP_IMAGERY_CLOUD_TOKEN' ) ) {
+		wp_die( "Please, define WP_IMAGERY_CLOUD_TOKEN with a token to enable plugin." );
+	}
+
 	if ( ! defined( 'WP_IMAGERY_CLOUD_WEBP_ENABLED' ) ) {
 		define( 'WP_IMAGERY_CLOUD_WEBP_ENABLED', true );
 	}
@@ -111,7 +115,6 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 		get_site_url( null, trailingslashit( rest_get_url_prefix() ) . "imagery-cloud/v1/media/$attachment_id" , 'https' ),
 		'jpeg',
 		WP_IMAGERY_CLOUD_WEBP_ENABLED,
-
 	);
 
 	if (is_wp_error($response)) {
@@ -119,7 +122,7 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 		// TODO: reschedule
 	}
 
-	return WP_IMAGERY_CLOUD_WORDPRESS_SIZES_DISABLED ? [] : $sizes;
+	return [];	//return WP_IMAGERY_CLOUD_WORDPRESS_SIZES_DISABLED ? [] : $sizes;
 
 }, 999, 3 );
 
@@ -130,17 +133,35 @@ add_action( 'rest_api_init', function ( WP_REST_Server $_ ) {
 	register_rest_route( 'imagery-cloud/v1', '/media/(?P<wpid>\d+)', array(
 		'methods' => 'POST',
 		'callback' => function ( WP_REST_Request $request ) {
-			$metadata = json_decode( $request->get_body(), true );
+			$result = json_decode( $request->get_body(), true );
+			$id = (int) $request->get_param('wpid');
 
-			update_post_meta(
-				(int) $request->get_param('wpid'), '_wp_gatsby_image_metadata', $metadata['results']
-			);
+			$metadata = wp_get_attachment_metadata( $id );
+			$metadata['srcsets'] = $result['results']['srcsets'];
+			$metadata['sizes'] = array_map( function ( $size ) {
+				$source = array_filter( $size["sources"], function( $source ) {
+					return $source["mimeType"] !== "image/webp";
+				} );
+
+				if ( count( $source ) === 0 ) {
+					$source = $size["sources"][0];
+				}
+
+				return [
+					"file" => basename( $source[0]["src"] ),
+					"width" => $size["width"],
+					"height" => $size["height"],
+					"mime-type" => $source[0]["mimeType"],
+				];
+			}, $result['results']['sizes'] );
+
+			return wp_update_attachment_metadata( $id, $metadata );
 		},
 	) );
 
-	register_rest_field( 'attachment', 'media_srcsets', [
+	/*register_rest_field( 'attachment', 'media_srcsets', [
 	  	'get_callback' => function ($data) {
-			$metadata = get_post_meta( $data['id'], '_wp_gatsby_image_metadata', true );
+			$metadata = get_post_meta( $data['id'], '_wp_image_srcsets', true );
 
 			if ( is_array( $metadata ) && array_key_exists( 'srcsets', $metadata )) {
 				array_walk( $metadata['srcsets'], function( &$item, $key ) {
@@ -150,7 +171,7 @@ add_action( 'rest_api_init', function ( WP_REST_Server $_ ) {
 				return array_values( $metadata['srcsets'] );
 			}
 	  	}
-	] );
+	] );*/
 
 } );
 

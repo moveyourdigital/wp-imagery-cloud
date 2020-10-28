@@ -35,10 +35,11 @@ class ImageryCloudClient {
 				"srcsets" => $srcsets,
 				"callbackUrl" => $callbackUrl,
 				"useWebP" => $useWebP,
-				"focalPoint" => $focalPoint
+				"focalPoint" => $focalPoint,
 			]),
 			"headers" => [
-				"Content-Type" => "application/json"
+				"Authorization" => "Token " . WP_IMAGERY_CLOUD_TOKEN,
+				"Content-Type" => "application/json",
 			],
 			"data_format" => "body",
 			"blocking" => true,
