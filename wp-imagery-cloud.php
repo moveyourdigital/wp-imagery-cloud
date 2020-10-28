@@ -138,18 +138,16 @@ add_action( 'rest_api_init', function ( WP_REST_Server $_ ) {
 		},
 	) );
 
-	register_rest_field( 'attachment', 'mediaSets', [
-		'get_callback' => function ($data) {
-		  return [];
-		}
-  ] );
-
 	register_rest_field( 'attachment', 'media_srcsets', [
 	  	'get_callback' => function ($data) {
 			$metadata = get_post_meta( $data['id'], '_wp_gatsby_image_metadata', true );
 
 			if ( is_array( $metadata ) && array_key_exists( 'srcsets', $metadata )) {
-				return $metadata['srcsets'];
+				array_walk( $metadata['srcsets'], function( &$item, $key ) {
+					$item['name'] = $key;
+				} );
+
+				return array_values( $metadata['srcsets'] );
 			}
 	  	}
 	] );
