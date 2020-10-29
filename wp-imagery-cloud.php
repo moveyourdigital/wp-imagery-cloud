@@ -104,6 +104,8 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 
 	$srcsets = \WP_Imagery_Cloud\get_registered_image_srcsets();
 
+	$post_date = get_the_modified_time( 'U', $attachment_id );
+
 	$client = new \WP_Imagery_Cloud\ImageryCloudClient();
 	$response = $client->enqueue(
 		$file_url,
@@ -124,6 +126,7 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 		get_site_url( null, trailingslashit( rest_get_url_prefix() ) . "imagery-cloud/v1/media/$attachment_id" , 'https' ),
 		'jpeg',
 		WP_IMAGERY_CLOUD_WEBP_ENABLED,
+		$post_date,
 	);
 
 	if (is_wp_error($response)) {
