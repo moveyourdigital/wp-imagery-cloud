@@ -104,7 +104,7 @@ add_filter( 'intermediate_image_sizes_advanced', function ( array $sizes, array 
 
 	$srcsets = \WP_Imagery_Cloud\get_registered_image_srcsets();
 
-	$post_date = get_the_modified_time( 'U', $attachment_id );
+	$post_date = get_the_time( 'U', $attachment_id );
 
 	$client = new \WP_Imagery_Cloud\ImageryCloudClient();
 	$response = $client->enqueue(
