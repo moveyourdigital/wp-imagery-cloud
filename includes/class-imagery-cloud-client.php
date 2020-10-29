@@ -26,7 +26,7 @@ class ImageryCloudClient {
 	public function enqueue(
 		string $url, array $sizes, array $srcsets, string $callbackUrl = null,
 		bool $forceFormat = false, bool $useWebP = true,
-		int $desired_timestamp = null, $discardOriginal = false,
+		string $prefix_path = null, $discardOriginal = false,
 		string $focalPoint = 'attention', string $interpolationAlgorithm = 'lanczos3'
 	) {
 		$response = wp_remote_post("https://api.imagerycloud.com/v1/jobs", [
@@ -37,7 +37,7 @@ class ImageryCloudClient {
 				"callbackUrl" => $callbackUrl,
 				"useWebP" => $useWebP,
 				"focalPoint" => $focalPoint,
-				"desiredTimestamp" => $desired_timestamp,
+				"prefixPath" => $prefix_path,
 			]),
 			"headers" => [
 				"Authorization" => "Token " . WP_IMAGERY_CLOUD_TOKEN,
