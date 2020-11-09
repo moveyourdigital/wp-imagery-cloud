@@ -29,7 +29,7 @@ class ImageryCloudClient {
 		string $prefix_path = null, $discardOriginal = false,
 		string $focalPoint = 'attention', string $interpolationAlgorithm = 'lanczos3'
 	) {
-		$response = wp_remote_post("https://api.imagerycloud.com/v1/jobs", [
+		$response = wp_remote_post("https://api.imagerycloud.com/v1/jobs/", [
 			"body" => json_encode([
 				"url" => $url,
 				"sizes" => $sizes,
