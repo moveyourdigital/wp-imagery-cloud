@@ -20,9 +20,6 @@
   "type": "wordpress-plugin",
     "require": {
       "composer/installers": "~1.0",
-      "spatie/image-optimizer": "^1.2",
-      "psr/log": "^1.1",
-      "rosell-dk/webp-convert": "^2.3",
-      "deliciousbrains/wp-background-processing": "^1.0"
+      "psr/log": "^1.1"
     }
 }
